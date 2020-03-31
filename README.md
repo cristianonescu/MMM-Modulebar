@@ -126,6 +126,12 @@ An example:
       showUrl: "http://MagicMirrorIP:8080/motioneye/1",
       hideUrl: "http://MagicMirrorIP:8080/motioneye/hide/1"
     },
+    "6": {
+    // hides the clock and shows the compliments, hides the compliments shows the clock
+      firstModule: "clock",
+      secondModule: "compliments",
+      text: "Button"
+    },
   }
 ````
 
