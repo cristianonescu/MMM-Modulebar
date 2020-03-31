@@ -33,8 +33,9 @@ Module.register("MMM-Modulebar",{
         // The default button 1. Add your buttons in the config.
 		buttons: {
             "1": {
-				// The modules exact name to be affected.
-				module: "clock",
+                // The modules exact name to be affected.
+                firstModule: "clock",
+                secondModule: "compliments",
 				// The text to be displayed in the button.
 				text:	"Clock",
 				// Then symbol from font-awesome!
@@ -74,13 +75,21 @@ Module.register("MMM-Modulebar",{
 		item.style.minWidth = self.config.minWidth;
         item.style.minHeight = self.config.minHeight;
 		// Collects all modules loaded in MagicMirror.
-		var modules = MM.getModules();
+        var modules = MM.getModules();
+        
+        var secondModuleIndex;
+        for (var j = 0; j < modules.length; j++){
+            if (modules[j].name === data.secondModule) { secondModuleIndex = j; }
+        }
+
+        modules[secondModuleIndex].hide(self.config.animationSpeed, {force: self.config.allowForce});
+
 		// When a button is clicked, the module either gets hidden or shown depending on current module status.
 		item.addEventListener("click", function () {
-			// Lists through all modules for testing.
+            // Lists through all modules for testing.
 			for (var i = 0; i < modules.length; i++) {
 				// Check if the curent module is the one.
-				if (modules[i].name === data.module) {
+				if (modules[i].name === data.firstModule) {
 					// Splits out the module number of the module with the same name.
 					var idnr = modules[i].data.identifier.split("_");
 					// Check if the idnum is an array or not
@@ -98,7 +107,7 @@ Module.register("MMM-Modulebar",{
 					// Checks if idnum is set in config.js. If it is, it only hides that modules with those numbers and name, if not hides all modules with the same name.
 					if (idnr[1] == idnumber || data.idnum == null) {
 						// Check if the module is hidden.
-						if (modules[i].hidden) {
+						if (modules[i].hidden || !modules[secondModuleIndex].hidden) {
 							// Check if there is a "showURL" defined.
 							if (data.showUrl != null) {
 								// Visiting the show URL.
@@ -107,12 +116,14 @@ Module.register("MMM-Modulebar",{
 								console.log("Visiting show URL: "+data.showUrl);
 							}
 							// Shows the module.
-							modules[i].show(self.config.animationSpeed, {force: self.config.allowForce});
+                            modules[i].show(self.config.animationSpeed, {force: self.config.allowForce});
+                            modules[secondModuleIndex].hide(self.config.animationSpeed, {force: self.config.allowForce});
 							// Prints in the console what just happend (adding the ID). 
 							console.log("Showing "+modules[i].name+" ID: "+idnr[1]);
 						}else{
 							// Hides the module.
-							modules[i].hide(self.config.animationSpeed, {force: self.config.allowForce});
+                            modules[i].hide(self.config.animationSpeed, {force: self.config.allowForce});
+                            modules[secondModuleIndex].show(self.config.animationSpeed, {force: self.config.allowForce});
 							// Prints in the console what just happend (adding the ID). 
 							console.log("Hiding "+modules[i].name+" ID: "+idnr[1]);
 							// Check if there is a "hideURL" defined.
@@ -185,5 +196,4 @@ Module.register("MMM-Modulebar",{
         return item;
     }
 });	
-
 
